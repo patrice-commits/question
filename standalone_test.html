@@ -471,8 +471,13 @@
         function startTest() {
             // Check if user already completed onboarding
             if (state.userData && state.userData.consentTerms) {
-                state.view = 'test';
-                state.currentPage = 1;
+                // Check if instructions read
+                if (localStorage.getItem('rivest_instructions')) {
+                    state.view = 'test';
+                    state.currentPage = 1;
+                } else {
+                    state.view = 'instructions';
+                }
                 render();
             } else {
                 state.view = 'onboarding';
@@ -628,7 +633,104 @@
         function submitOnboarding() {
             state.userData.dateTest = new Date().toISOString();
             localStorage.setItem('rivest_user_v2', JSON.stringify(state.userData));
+            state.view = 'instructions';
+            render();
+        }
+
+        // --- INSTRUCTIONS RENDERER ---
+        function renderInstructions() {
+            // Save flag
+            localStorage.setItem('rivest_instructions', 'true');
+
+            app.innerHTML = `
+                <div class="card" style="max-width: 800px; margin: 0 auto; padding-bottom: 2rem;">
+                    
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                         <span style="background: #E2E8F0; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: inline-block;">
+                            Page 1/${state.totalPages + 1}
+                        </span>
+                        <h1 style="margin-top: 1rem; font-size: 2rem; background: -webkit-linear-gradient(45deg, #1E3A8A, #2BC0D2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Instructions Finales</h1>
+                        <p style="color: var(--text-muted); font-size: 1.1rem;">Comment répondre pour des résultats précis</p>
+                    </div>
+
+                    <div style="display: grid; gap: 1.5rem;">
+                        
+                        <!-- TIME -->
+                        <div class="card" style="display: flex; gap: 1rem; align-items: flex-start; margin: 0;">
+                            <div style="background: #F1F5F9; padding: 0.75rem; border-radius: 50%;">⏱️</div>
+                            <div>
+                                <h3 style="margin-bottom: 0.5rem;">Temps & Navigation</h3>
+                                <ul style="list-style: none; padding: 0; line-height: 1.6;">
+                                    <li>✅ ~200 questions au total (40 pages)</li>
+                                    <li>✅ Environ 15 secondes par question (~45 min)</li>
+                                    <li>✅ Sauvegarde automatique (pause possible)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- LIKERT DEMO -->
+                        <div class="card" style="display: flex; gap: 1rem; align-items: flex-start; margin: 0;">
+                            <div style="background: #F1F5F9; padding: 0.75rem; border-radius: 50%;">🎯</div>
+                            <div style="width: 100%;">
+                                <h3 style="margin-bottom: 0.5rem;">L'Échelle 1-5</h3>
+                                <p style="margin-bottom: 1rem;">"Imaginez une situation de crise : l'équipe vous regarde pour décider."</p>
+                                <div style="display: flex; justify-content: space-between; gap: 5px; flex-wrap: wrap;">
+                                    ${[1, 2, 3, 4, 5].map(i => {
+                const labels = ["FAIBLE", "OCCASIONNELLE", "MODÉRÉE", "FORTE", "DOMINANTE"];
+                const selected = i === 4; // Demo selected
+                return `
+                                            <div style="flex: 1; text-align: center; padding: 0.5rem; border: 2px solid ${selected ? 'var(--primary)' : '#E2E8F0'}; border-radius: 0.5rem; background: ${selected ? '#F0FDFA' : 'white'};">
+                                                <div style="font-weight: bold; color: var(--accent); font-size: 1.2rem;">${i}</div>
+                                                <div style="font-size: 0.6rem; font-weight: 600;">${labels[i - 1]}</div>
+                                            </div>
+                                        `;
+            }).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TIPS -->
+                        <div class="card" style="display: flex; gap: 1rem; align-items: flex-start; margin: 0;">
+                            <div style="background: #F1F5F9; padding: 0.75rem; border-radius: 50%;">💡</div>
+                            <div>
+                                <h3 style="margin-bottom: 0.5rem;">Conseils d'Honnêteté</h3>
+                                <ul style="list-style: none; padding: 0; line-height: 1.6;">
+                                    <li>✅ Réalité ACTUELLE (pas idéal aspiré)</li>
+                                    <li>✅ Exemples des 3 derniers mois</li>
+                                    <li>✅ Répondez spontanément</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                         <!-- RESULTS -->
+                        <div class="card" style="display: flex; gap: 1rem; align-items: flex-start; margin: 0;">
+                            <div style="background: #F1F5F9; padding: 0.75rem; border-radius: 50%;">📊</div>
+                            <div>
+                                <h3 style="margin-bottom: 0.5rem;">Ce que vous obtiendrez</h3>
+                                <ul style="list-style: none; padding: 0; line-height: 1.6;">
+                                    <li>🏆 TOP 10 QUALITÉS</li>
+                                    <li>📊 Graphiques + Intelligences Multiples</li>
+                                    <li>💾 Export JSON/Excel complet</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="margin-top: 3rem; text-align: center;">
+                        <p style="margin-bottom: 1rem; font-weight: 600; color: var(--accent);">Vous êtes prêt(e) pour découvrir vos 30 qualités dominantes !</p>
+                        <button class="btn btn-primary" onclick="launchTest()" style="width: 100%; max-width: 400px; padding: 1rem; font-size: 1.2rem; background-color: #10B981;">
+                            JE COMPRENDS → COMMENCER
+                        </button>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        function launchTest() {
             state.view = 'test';
+            state.currentPage = 1;
             render();
         }
 
@@ -662,6 +764,7 @@
 
             if (state.view === 'hero') renderHero();
             else if (state.view === 'onboarding') renderOnboarding();
+            else if (state.view === 'instructions') renderInstructions();
             else if (state.view === 'test') renderTest();
             else if (state.view === 'results') renderResults();
         }
@@ -683,8 +786,8 @@
             const pageQuestions = questions.slice(startIdx, startIdx + QUESTIONS_PER_PAGE);
             const percent = Math.round((state.currentPage / state.totalPages) * 100);
 
-            // Update Header
-            progressText.innerText = `Page ${state.currentPage}/${state.totalPages}`;
+            // Update Header (Shifted Page Number)
+            progressText.innerText = `Page ${state.currentPage + 1}/${state.totalPages + 1} (Test)`;
 
             // Progress Bar
             const progContainer = document.createElement('div');

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Hero from './components/Hero';
 import OnboardingPage from './components/OnboardingPage';
+import InstructionsPage from './components/InstructionsPage';
 import QuestionnairePage from './components/QuestionnairePage';
 import ResultsPage from './components/ResultsPage';
 
@@ -64,6 +65,12 @@ function App() {
                         <Route
                             path="/onboarding"
                             element={<OnboardingPage onComplete={(u) => setUser(u)} />}
+                        />
+                        <Route
+                            path="/instructions"
+                            element={
+                                user ? <InstructionsPage totalPages={42} /> : <Navigate to="/onboarding" replace />
+                            }
                         />
                         <Route
                             path="/test"

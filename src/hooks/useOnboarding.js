@@ -55,7 +55,7 @@ export function useOnboarding(onComplete) {
             localStorage.setItem('rivest_user', JSON.stringify(finalData));
 
             if (onComplete) onComplete(finalData);
-            navigate('/test');
+            navigate('/instructions');
         }
     };
 
