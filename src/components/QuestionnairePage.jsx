@@ -86,6 +86,8 @@ export default function QuestionnairePage({ answers, onAnswer, currentPage, setC
 }
 
 function QuestionItem({ question, traitName, value, onChange }) {
+    const labels = ["FAIBLE", "OCCASIONNELLE", "MODÉRÉE", "FORTE", "DOMINANTE"];
+
     return (
         <div className="card">
             <div style={{ marginBottom: '1rem' }}>
@@ -94,51 +96,53 @@ function QuestionItem({ question, traitName, value, onChange }) {
                 </p>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Pas du tout</span>
-                <div style={{ display: 'flex', gap: '10px', flex: 1, justifyContent: 'center' }}>
-                    {[1, 2, 3, 4, 5].map(rating => (
-                        <LikertOption
-                            key={rating}
-                            value={rating}
-                            selected={value === rating}
-                            onSelect={() => onChange(rating)}
-                        />
-                    ))}
-                </div>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Tout à fait</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '4px', alignItems: 'flex-start', flexWrap: 'nowrap' }}>
+                {[1, 2, 3, 4, 5].map((rating, idx) => (
+                    <LikertOption
+                        key={rating}
+                        value={rating}
+                        label={labels[idx]}
+                        selected={value === rating}
+                        onSelect={() => onChange(rating)}
+                    />
+                ))}
             </div>
         </div>
     );
 }
 
-function LikertOption({ value, selected, onSelect }) {
+function LikertOption({ value, label, selected, onSelect }) {
     // Styles for the radio box
-    const size = selected ? '50px' : '40px';
-    const bg = selected ? 'var(--primary)' : 'transparent';
-    const color = selected ? 'white' : 'var(--text-muted)';
-    const border = selected ? 'var(--primary)' : '#CBD5E1';
+    const size = selected ? '50px' : '40px'; // Keep size similar, maybe slight grow
+    // Actually standalone uses fixed width container mostly.
 
     return (
-        <button
-            onClick={onSelect}
-            style={{
-                width: size,
-                height: size,
-                borderRadius: '8px',
-                border: `2px solid ${border}`,
-                backgroundColor: bg,
-                color: color,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold',
-                fontSize: '1.1rem',
-                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
-            }}
-            aria-label={`Note ${value}`}
-        >
-            {value}
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, minWidth: '50px', maxWidth: '80px' }}>
+            <button
+                onClick={onSelect}
+                style={{
+                    width: '100%',
+                    aspectRatio: '1/1',
+                    maxWidth: '50px',
+                    borderRadius: '8px',
+                    border: `2px solid ${selected ? 'var(--primary)' : '#CBD5E1'}`,
+                    backgroundColor: selected ? 'var(--primary)' : 'transparent',
+                    color: selected ? 'white' : 'var(--text-muted)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer'
+                }}
+                aria-label={`Note ${value} - ${label}`}
+            >
+                {value}
+            </button>
+            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: '4px', textAlign: 'center', fontWeight: 600, wordBreak: 'break-word' }}>
+                {label}
+            </span>
+        </div>
     );
 }

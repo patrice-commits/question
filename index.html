@@ -105,14 +105,27 @@
 
         .likert-scale {
             display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: space-between;
+            /* Use space-between for better mobile fit */
+            flex-wrap: nowrap;
+            /* Try to keep on one line if possible, or wrap whole row */
+        }
+
+        @media (max-width: 450px) {
+            .likert-scale {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
         }
 
         .likert-opt {
-            width: 40px;
-            height: 40px;
+            width: 100%;
+            /* Fill container */
+            max-width: 50px;
+            /* Limit button size */
+            aspect-ratio: 1;
             border-radius: 8px;
             border: 2px solid #CBD5E1;
             background: transparent;
@@ -121,6 +134,8 @@
             justify-content: center;
             font-weight: bold;
             cursor: pointer;
+            margin: 0 auto;
+            /* Center in col */
         }
 
         .likert-opt.selected {
@@ -817,17 +832,24 @@
                 const qEl = document.createElement('div');
                 qEl.className = 'card';
 
+                const labels = ["FAIBLE", "OCCASIONNELLE", "MODÉRÉE", "FORTE", "DOMINANTE"];
+
                 let optionsHtml = '';
                 for (let i = 1; i <= 5; i++) {
                     const isSel = val === i ? 'selected' : '';
-                    optionsHtml += `<button class="likert-opt ${isSel}" onclick="setAnswer(${q.id}, ${i})">${i}</button>`;
+                    optionsHtml += `
+                        <div style="display: flex; flex-direction: column; align-items: center; width: 60px;">
+                            <button class="likert-opt ${isSel}" onclick="setAnswer(${q.id}, ${i})">${i}</button>
+                            <span style="font-size: 0.6rem; color: var(--text-muted); margin-top: 4px; text-align: center; font-weight: 600;">${labels[i - 1]}</span>
+                        </div>
+                    `;
                 }
 
                 qEl.innerHTML = `
                 <div style="margin-bottom: 1rem;">
                     <div style="font-size: 1.1rem; margin-top: 0.5rem;"><strong>#${q.id}</strong> "${q.text}"</div>
                 </div>
-                <div class="likert-scale">
+                <div class="likert-scale" style="align-items: flex-start;">
                     ${optionsHtml}
                 </div>
             `;
