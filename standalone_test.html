@@ -709,7 +709,6 @@
                         </button>
                     </div>
                 </div>
-            `;      < !--MODAL TERMS-- >
                 <div id="terms-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
                     <div style="background: white; padding: 2rem; border-radius: 1rem; max-width: 500px; width: 90%; max-height: 80vh; display: flex; flex-direction: column;">
                         <h3>Conditions d'utilisation</h3>
@@ -777,7 +776,7 @@
             localStorage.setItem('rivest_instructions', 'true');
 
             app.innerHTML = `
-                < div class="card" style = "max-width: 800px; margin: 0 auto; padding-bottom: 2rem;" >
+                <div class="card" style="max-width: 800px; margin: 0 auto; padding-bottom: 2rem;">
                     
                     <div style="text-align: center; margin-bottom: 2rem;">
                          <span style="background: #E2E8F0; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: inline-block;">
@@ -904,7 +903,7 @@
                 else if (state.view === 'results') renderResults();
             } catch (e) {
                 console.error(e);
-                app.innerHTML = `< div class="card" style = "color: red; padding: 2rem;" > Une erreur est survenue: ${ e.message }</div > `;
+                app.innerHTML = `< div class="card" style = "color: red; padding: 2rem;" > Une erreur est survenue: ${e.message}</div > `;
             }
         }
 
@@ -922,14 +921,14 @@
 
         function renderTest() {
             // Re-clear app to avoid appending duplicates if not handled correctly (though usually we clear in render())
-            app.innerHTML = ''; 
-            
+            app.innerHTML = '';
+
             const startIdx = (state.currentPage - 1) * QUESTIONS_PER_PAGE;
             const pageQuestions = questions.slice(startIdx, startIdx + QUESTIONS_PER_PAGE);
             const percent = Math.round((state.currentPage / state.totalPages) * 100);
 
             // Update Header (Shifted Page Number)
-            progressText.innerText = `${ t('test.page') } ${ state.currentPage }/${state.totalPages}`;
+            progressText.innerText = `${t('test.page')} ${state.currentPage}/${state.totalPages}`;
 
             // Progress Bar
             const progContainer = document.createElement('div');
