@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Hero from './components/Hero';
+import OnboardingPage from './components/OnboardingPage';
 import QuestionnairePage from './components/QuestionnairePage';
 import ResultsPage from './components/ResultsPage';
 
 function App() {
+    // User State
+    const [user, setUser] = useState(() => {
+        const saved = localStorage.getItem('rivest_user');
+        return saved ? JSON.parse(saved) : null;
+    });
+
     // Global State for answers
     // Structure: { [questionId]: value (1-5) }
     const [answers, setAnswers] = useState(() => {
@@ -55,19 +62,27 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Hero />} />
                         <Route
+                            path="/onboarding"
+                            element={<OnboardingPage onComplete={(u) => setUser(u)} />}
+                        />
+                        <Route
                             path="/test"
                             element={
-                                <QuestionnairePage
-                                    answers={answers}
-                                    onAnswer={handleAnswer}
-                                    currentPage={currentPage}
-                                    setCurrentPage={setCurrentPage}
-                                />
+                                user ? (
+                                    <QuestionnairePage
+                                        answers={answers}
+                                        onAnswer={handleAnswer}
+                                        currentPage={currentPage}
+                                        setCurrentPage={setCurrentPage}
+                                    />
+                                ) : (
+                                    <Navigate to="/onboarding" replace />
+                                )
                             }
                         />
                         <Route
                             path="/results"
-                            element={<ResultsPage answers={answers} onReset={resetTest} />}
+                            element={<ResultsPage answers={answers} onReset={resetTest} user={user} />}
                         />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>

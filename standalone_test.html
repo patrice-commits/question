@@ -166,6 +166,15 @@
             color: var(--accent);
             font-size: 1.2rem;
         }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #CBD5E1;
+            font-size: 1rem;
+            font-family: inherit;
+        }
     </style>
 </head>
 
@@ -423,6 +432,9 @@
             const savedAns = localStorage.getItem('rivest_answers_v2'); // New storage key for v2
             if (savedAns) state.answers = JSON.parse(savedAns);
 
+            const savedUser = localStorage.getItem('rivest_user_v2');
+            if (savedUser) state.userData = JSON.parse(savedUser);
+
             const savedPage = localStorage.getItem('rivest_page_v2');
             if (savedPage) state.currentPage = parseInt(savedPage);
 
@@ -457,6 +469,165 @@
         }
 
         function startTest() {
+            // Check if user already completed onboarding
+            if (state.userData && state.userData.consentTerms) {
+                state.view = 'test';
+                state.currentPage = 1;
+                render();
+            } else {
+                state.view = 'onboarding';
+                render();
+            }
+        }
+
+        // --- ONBOARDING RENDERER ---
+        function renderOnboarding() {
+            // Ensure state.userData exists
+            if (!state.userData) {
+                state.userData = {
+                    nom: "", prenom: "", age: "", occupation: "", email: "",
+                    consentTerms: false, consentAge: false, consentEmail: false
+                };
+            }
+            const d = state.userData;
+
+            // Validation Logic embedded in render for simplicity (re-renders on input)
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = d.nom && d.prenom && d.age && d.occupation &&
+                emailRegex.test(d.email) &&
+                d.consentTerms && d.consentAge && d.consentEmail;
+
+            app.innerHTML = `
+                <div class="card" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <h1 style="font-size: 2rem; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #1E3A8A, #2BC0D2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">TEST DE TALENT RIVEST</h1>
+                        <p style="color: var(--text-muted);">Découvrez vos 30 qualités dominantes</p>
+                        <span style="background: #E2E8F0; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: inline-block; margin-top: 1rem;">Page 0/41</span>
+                    </div>
+
+                    <!-- USER FORM -->
+                    <div style="margin-bottom: 2rem;">
+                        <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Informations Personnelles</h2>
+                        <div style="display: grid; gap: 1rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Prénom*</label>
+                                    <input type="text" id="inp-prenom" class="form-input" value="${d.prenom}" oninput="updateUser('prenom', this.value)" placeholder="Votre prénom">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Nom*</label>
+                                    <input type="text" id="inp-nom" class="form-input" value="${d.nom}" oninput="updateUser('nom', this.value)" placeholder="Votre nom">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Âge*</label>
+                                    <select id="inp-age" class="form-input" onchange="updateUser('age', this.value)">
+                                        <option value="">Sélectionner...</option>
+                                        ${['18-24', '25-34', '35-44', '45-54', '55-64', '65+'].map(a => `<option value="${a}" ${d.age === a ? 'selected' : ''}>${a}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Occupation*</label>
+                                    <select id="inp-occ" class="form-input" onchange="updateUser('occupation', this.value)">
+                                        <option value="">Sélectionner...</option>
+                                        ${['Entrepreneur', 'Cadre', 'Commercial', 'Technique', 'RH', 'Étudiant', 'Autre'].map(o => `<option value="${o}" ${d.occupation === o ? 'selected' : ''}>${o}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email*</label>
+                                <input type="email" id="inp-email" class="form-input" value="${d.email}" oninput="updateUser('email', this.value)" placeholder="exemple@email.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONSENT -->
+                    <div style="margin-bottom: 2rem;">
+                         <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Consentement</h2>
+                         <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" style="width: 20px; height: 20px;" ${d.consentAge ? 'checked' : ''} onchange="updateUser('consentAge', this.checked)">
+                                <span>Je confirme avoir 18 ans ou plus.</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" style="width: 20px; height: 20px;" ${d.consentTerms ? 'checked' : ''} onchange="updateUser('consentTerms', this.checked)">
+                                <span>J'ai lu et j'accepte les <a href="#" onclick="showTerms(event)" style="color: var(--primary);">conditions d'utilisation</a>.</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" style="width: 20px; height: 20px;" ${d.consentEmail ? 'checked' : ''} onchange="updateUser('consentEmail', this.checked)">
+                                <span>J'accepte de recevoir mes résultats par courriel.</span>
+                            </label>
+                         </div>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.2rem; background-color: ${isValid ? '#10B981' : 'var(--secondary)'}; pointer-events: ${isValid ? 'auto' : 'none'}; opacity: ${isValid ? 1 : 0.5};" onclick="submitOnboarding()">
+                            DÉMARRER LE TEST
+                        </button>
+                    </div>
+                </div>
+
+                <!-- MODAL TERMS -->
+                <div id="terms-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+                    <div style="background: white; padding: 2rem; border-radius: 1rem; max-width: 500px; width: 90%; max-height: 80vh; display: flex; flex-direction: column;">
+                        <h3>Conditions d'utilisation</h3>
+                        <div style="overflow-y: auto; flex: 1; border: 1px solid #eee; padding: 1rem; margin: 1rem 0;">
+                            <p><strong>Dernière mise à jour : 2026</strong></p>
+                            <p>En utilisant ce test, vous acceptez que vos données soient traitées confidentiellement.</p>
+                            <p>1. Données collectées : Nom, email, réponses.</p>
+                            <p>2. Usage : Génération de profil uniquement.</p>
+                            <p>3. Tiers : Aucune vente de données.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="closeTerms()">Fermer</button>
+                    </div>
+                </div>
+            `;
+
+            // Re-focus input if we just typed (simple approach, might lose focus on re-render in vanilla JS without VDOM, so we use onchange mostly or separate update logic. Actually re-rendering entire HTML on Input loses focus instantly. 
+            // Better approach for Vanilla JS: Don't re-render whole HTML on input. Just update state and button status.
+            // I will implement updateUser to NOT re-render everything, only button state.)
+        }
+
+        function updateUser(field, val) {
+            if (!state.userData) state.userData = {};
+            state.userData[field] = val;
+
+            // Check validity
+            const d = state.userData;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const isValid = d.nom && d.prenom && d.age && d.occupation &&
+                emailRegex.test(d.email) &&
+                d.consentTerms && d.consentAge && d.consentEmail;
+
+            // Update button only
+            const btn = document.querySelector('button[onclick="submitOnboarding()"]');
+            if (btn) {
+                if (isValid) {
+                    btn.style.backgroundColor = '#10B981';
+                    btn.style.pointerEvents = 'auto';
+                    btn.style.opacity = '1';
+                } else {
+                    btn.style.backgroundColor = 'var(--secondary)';
+                    btn.style.pointerEvents = 'none';
+                    btn.style.opacity = '0.5';
+                }
+            }
+        }
+
+        function showTerms(e) {
+            e.preventDefault();
+            document.getElementById('terms-modal').style.display = 'flex';
+        }
+        function closeTerms() {
+            document.getElementById('terms-modal').style.display = 'none';
+        }
+
+        function submitOnboarding() {
+            state.userData.dateTest = new Date().toISOString();
+            localStorage.setItem('rivest_user_v2', JSON.stringify(state.userData));
             state.view = 'test';
             render();
         }
@@ -490,6 +661,7 @@
             progressText.innerText = '';
 
             if (state.view === 'hero') renderHero();
+            else if (state.view === 'onboarding') renderOnboarding();
             else if (state.view === 'test') renderTest();
             else if (state.view === 'results') renderResults();
         }

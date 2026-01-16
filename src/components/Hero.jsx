@@ -23,7 +23,7 @@ export default function Hero() {
 
                 <button
                     className="btn btn-primary"
-                    onClick={() => navigate('/test')}
+                    onClick={() => navigate('/onboarding')}
                     style={{ fontSize: '1.3rem', padding: '1rem 3rem' }}
                 >
                     COMMENCER LE TEST <ArrowRight style={{ marginLeft: '10px' }} />
