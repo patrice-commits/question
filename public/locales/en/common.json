@@ -1,0 +1,51 @@
+{
+    "onboarding": {
+        "title": "RIVEST Talent Test",
+        "subtitle": "Discover your 30 dominant traits",
+        "name": "LAST NAME",
+        "firstname": "FIRST NAME",
+        "age": "AGE",
+        "occupation": "OCCUPATION",
+        "email": "EMAIL",
+        "consent1": "I have read the terms of use",
+        "consent2": "I confirm I am 18 years or older",
+        "consent3": "I agree to receive my results by email",
+        "start": "START TEST",
+        "page": "Page 0/41"
+    },
+    "instructions": {
+        "title": "Final Instructions",
+        "subtitle": "How to answer for accurate results",
+        "time_title": "Time & Navigation",
+        "time_desc": "✅ ~200 questions (40 pages)\n✅ ~15 seconds/question\n✅ Auto-save",
+        "scale_title": "The 1-5 Scale",
+        "scale_desc": "Imagine a crisis situation...",
+        "tips_title": "Honesty Tips",
+        "tips_desc": "✅ CURRENT reality\n✅ Recent examples\n✅ Spontaneity",
+        "results_title": "What you will get",
+        "results_desc": "🏆 TOP 10 Traits\n📊 Charts\n💾 Export",
+        "ready": "You are ready!",
+        "cta": "I UNDERSTAND → START",
+        "scale_labels": {
+            "1": "LOW",
+            "2": "OCCASIONAL",
+            "3": "MODERATE",
+            "4": "STRONG",
+            "5": "DOMINANT"
+        }
+    },
+    "test": {
+        "page_title": "Evaluate the following scenarios",
+        "last_step": "Last Step!",
+        "next": "Next",
+        "prev": "Previous",
+        "finish": "View My Results",
+        "progress": "Page {{current}}/{{total}} (Test)"
+    },
+    "results": {
+        "title": "Your Results",
+        "subtitle": "Here are your main strengths",
+        "restart": "Restart",
+        "chart_label": "Score"
+    }
+}

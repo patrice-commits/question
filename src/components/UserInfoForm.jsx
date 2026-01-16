@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function UserInfoForm({ data, onChange }) {
+export default function UserInfoForm({ data, onChange, t }) {
     const occupations = [
         "Entrepreneur", "Cadre", "Commercial", "Technique", "RH", "Étudiant", "Autre"
     ];
@@ -15,54 +15,54 @@ export default function UserInfoForm({ data, onChange }) {
             <div style={{ display: 'grid', gap: '1rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Prénom*</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>{t('onboarding.firstname')}*</label>
                         <input
                             type="text"
                             style={inputStyle}
                             value={data.prenom}
                             onChange={(e) => onChange('prenom', e.target.value)}
-                            placeholder="Votre prénom"
+                            placeholder="..."
                         />
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Nom*</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>{t('onboarding.name')}*</label>
                         <input
                             type="text"
                             style={inputStyle}
                             value={data.nom}
                             onChange={(e) => onChange('nom', e.target.value)}
-                            placeholder="Votre nom"
+                            placeholder="..."
                         />
                     </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Âge*</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>{t('onboarding.age')}*</label>
                         <select
                             style={inputStyle}
                             value={data.age}
                             onChange={(e) => onChange('age', e.target.value)}
                         >
-                            <option value="">Sélectionner...</option>
+                            <option value="">...</option>
                             {ages.map(a => <option key={a} value={a}>{a}</option>)}
                         </select>
                     </div>
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Occupation*</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>{t('onboarding.occupation')}*</label>
                         <select
                             style={inputStyle}
                             value={data.occupation}
                             onChange={(e) => onChange('occupation', e.target.value)}
                         >
-                            <option value="">Sélectionner...</option>
+                            <option value="">...</option>
                             {occupations.map(o => <option key={o} value={o}>{o}</option>)}
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Email*</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>{t('onboarding.email')}*</label>
                     <input
                         type="email"
                         style={inputStyle}

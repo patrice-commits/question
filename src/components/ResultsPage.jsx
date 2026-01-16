@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { calculateResults } from '../utils/calculator';
+import { useTranslation } from 'react-i18next';
 import { Bar } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -22,6 +23,7 @@ ChartJS.register(
 );
 
 export default function ResultsPage({ answers, onReset }) {
+    const { t } = useTranslation();
     const sortedTraits = useMemo(() => calculateResults(answers), [answers]);
     const top10 = sortedTraits.slice(0, 10);
 
@@ -30,7 +32,7 @@ export default function ResultsPage({ answers, onReset }) {
         labels: top10.map(t => t.name),
         datasets: [
             {
-                label: 'Score Moyen',
+                label: t('results.chart_label'),
                 data: top10.map(t => t.score),
                 backgroundColor: '#2BC0D2', // Brand Primary
                 borderRadius: 4,
@@ -43,7 +45,7 @@ export default function ResultsPage({ answers, onReset }) {
         responsive: true,
         plugins: {
             legend: { display: false },
-            title: { display: true, text: 'Vos Top 10 Qualités' },
+            title: { display: true, text: t('results.subtitle') }, // Using subtitle as chart title for now or we could add scale_title equivalent
         },
         scales: {
             x: { min: 0, max: 5 },
@@ -64,8 +66,8 @@ export default function ResultsPage({ answers, onReset }) {
     return (
         <div className="container" style={{ paddingBottom: '4rem' }}>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <h1 style={{ color: 'var(--accent)' }}>Vos Résultats</h1>
-                <p style={{ fontSize: '1.2rem' }}>Voici vos forces dominantes selon le modèle RIVEST</p>
+                <h1 style={{ color: 'var(--accent)' }}>{t('results.title')}</h1>
+                <p style={{ fontSize: '1.2rem' }}>{t('results.subtitle')}</p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
@@ -93,7 +95,7 @@ export default function ResultsPage({ answers, onReset }) {
 
                 {/* Detailed List */}
                 <div className="card">
-                    <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Détails du Top 10</h3>
+                    <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>{t('results.subtitle')}</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {top10.map((trait, idx) => (
                             <div key={trait.id} className="flex-between" style={{ padding: '0.5rem', background: idx % 2 === 0 ? '#F8FAFC' : 'white' }}>
@@ -121,7 +123,7 @@ export default function ResultsPage({ answers, onReset }) {
 
                     <button className="btn btn-outline" onClick={onReset}>
                         <RefreshCw size={20} style={{ marginRight: '8px' }} />
-                        Nouveau Test
+                        {t('results.restart')}
                     </button>
 
                     <button className="btn" style={{ background: 'var(--accent)', color: 'white' }}>

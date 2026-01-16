@@ -434,9 +434,117 @@
             questionMap[q.traitId].push(q.id);
         });
 
+        // --- I18N ---
+        const translations = {
+            fr: {
+                onboarding: {
+                    title: "Test de Talent RIVEST",
+                    subtitle: "Découvrez vos 30 qualités dominantes",
+                    name: "NOM",
+                    firstname: "PRÉNOM",
+                    age: "ÂGE",
+                    occupation: "OCCUPATION",
+                    email: "COURRIEL",
+                    consent1: "J'ai lu les",
+                    consent1_link: "conditions d'utilisation",
+                    consent2: "Je confirme avoir 18 ans ou plus",
+                    consent3: "J'accepte de recevoir mes résultats par courriel",
+                    start: "DÉMARRER LE TEST",
+                    page: "Page 0/41"
+                },
+                instructions: {
+                    title: "Instructions Finales",
+                    subtitle: "Comment répondre pour des résultats précis",
+                    time_title: "Temps & Navigation",
+                    time_desc: "✅ ~200 questions (40 pages)<br>✅ Environ 15 secondes par question (~45 min)<br>✅ Sauvegarde automatique",
+                    scale_title: "L'Échelle 1-5",
+                    scale_desc: "\"Imaginez une situation de crise : l'équipe vous regarde pour décider.\"",
+                    tips_title: "Conseils d'Honnêteté",
+                    tips_desc: "✅ Réalité ACTUELLE<br>✅ Exemples des 3 derniers mois<br>✅ Répondez spontanément",
+                    results_title: "Ce que vous obtiendrez",
+                    results_desc: "🏆 TOP 10 QUALITÉS<br>📊 Graphiques<br>💾 Export",
+                    ready: "Vous êtes prêt(e) !",
+                    cta: "JE COMPRENDS → COMMENCER",
+                    scale_labels: ["FAIBLE", "OCCASIONNELLE", "MODÉRÉE", "FORTE", "DOMINANTE"]
+                },
+                test: {
+                    title: "Test de Talent",
+                    page: "Page",
+                    prev: "Précédent",
+                    next: "Suivant",
+                    finish: "Voir Résultats"
+                },
+                results: {
+                    title: "Vos Résultats",
+                    subtitle: "Voici vos forces principales",
+                    restart: "Recommencer"
+                }
+            },
+            en: {
+                onboarding: {
+                    title: "RIVEST Talent Test",
+                    subtitle: "Discover your 30 dominant traits",
+                    name: "LAST NAME",
+                    firstname: "FIRST NAME",
+                    age: "AGE",
+                    occupation: "OCCUPATION",
+                    email: "EMAIL",
+                    consent1: "I have read the",
+                    consent1_link: "terms of use",
+                    consent2: "I confirm I am 18 years or older",
+                    consent3: "I agree to receive my results by email",
+                    start: "START TEST",
+                    page: "Page 0/41"
+                },
+                instructions: {
+                    title: "Final Instructions",
+                    subtitle: "How to answer for accurate results",
+                    time_title: "Time & Navigation",
+                    time_desc: "✅ ~200 questions (40 pages)<br>✅ ~15 seconds per question (~45 min)<br>✅ Auto-save",
+                    scale_title: "The 1-5 Scale",
+                    scale_desc: "\"Imagine a crisis situation: the team looks to you for a decision.\"",
+                    tips_title: "Honesty Tips",
+                    tips_desc: "✅ CURRENT reality<br>✅ Recent examples (last 3 months)<br>✅ Spontaneous answers",
+                    results_title: "What you will get",
+                    results_desc: "🏆 TOP 10 TRAITS<br>📊 Full Charts<br>💾 Export Results",
+                    ready: "You are ready!",
+                    cta: "I UNDERSTAND → START",
+                    scale_labels: ["LOW", "OCCASIONAL", "MODERATE", "STRONG", "DOMINANT"]
+                },
+                test: {
+                    title: "Talent Test",
+                    page: "Page",
+                    prev: "Previous",
+                    next: "Next",
+                    finish: "View Results"
+                },
+                results: {
+                    title: "Your Results",
+                    subtitle: "Here are your main strengths",
+                    restart: "Restart"
+                }
+            }
+        };
+
+        function t(keyInput) {
+            const keys = keyInput.split('.');
+            let value = translations[state.lang];
+            for (const k of keys) {
+                value = value[k];
+                if (!value) return keyInput;
+            }
+            return value;
+        }
+
+        function setLang(lang) {
+            state.lang = lang;
+            render();
+        }
+
         // --- STATE ---
         let state = {
             view: 'hero',
+            lang: 'fr', // Default Language
             currentPage: 1,
             answers: {},
             totalPages: Math.ceil(questions.length / 5) // Dynamic total pages
@@ -525,10 +633,16 @@
 
             app.innerHTML = `
                 <div class="card" style="max-width: 600px; margin: 0 auto; padding: 2rem;">
+                    
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 1rem;">
+                        <button onclick="setLang('fr')" style="background:none; border:none; cursor:pointer; font-weight:${state.lang === 'fr' ? 'bold' : 'normal'}; color:${state.lang === 'fr' ? 'var(--primary)' : 'var(--text-muted)'}">FR</button>
+                        <button onclick="setLang('en')" style="background:none; border:none; cursor:pointer; font-weight:${state.lang === 'en' ? 'bold' : 'normal'}; color:${state.lang === 'en' ? 'var(--primary)' : 'var(--text-muted)'}">EN</button>
+                    </div>
+
                     <div style="text-align: center; margin-bottom: 2rem;">
-                        <h1 style="font-size: 2rem; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #1E3A8A, #2BC0D2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">TEST DE TALENT RIVEST</h1>
-                        <p style="color: var(--text-muted);">Découvrez vos 30 qualités dominantes</p>
-                        <span style="background: #E2E8F0; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: inline-block; margin-top: 1rem;">Page 0/41</span>
+                        <h1 style="font-size: 2rem; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #1E3A8A, #2BC0D2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${t('onboarding.title')}</h1>
+                        <p style="color: var(--text-muted);">${t('onboarding.subtitle')}</p>
+                        <span style="background: #E2E8F0; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: inline-block; margin-top: 1rem;">${t('onboarding.page')}</span>
                     </div>
 
                     <!-- USER FORM -->
@@ -537,34 +651,34 @@
                         <div style="display: grid; gap: 1rem;">
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                 <div>
-                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Prénom*</label>
-                                    <input type="text" id="inp-prenom" class="form-input" value="${d.prenom}" oninput="updateUser('prenom', this.value)" placeholder="Votre prénom">
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">${t('onboarding.firstname')}*</label>
+                                    <input type="text" id="inp-prenom" class="form-input" value="${d.prenom}" oninput="updateUser('prenom', this.value)" placeholder="...">
                                 </div>
                                 <div>
-                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Nom*</label>
-                                    <input type="text" id="inp-nom" class="form-input" value="${d.nom}" oninput="updateUser('nom', this.value)" placeholder="Votre nom">
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">${t('onboarding.name')}*</label>
+                                    <input type="text" id="inp-nom" class="form-input" value="${d.nom}" oninput="updateUser('nom', this.value)" placeholder="...">
                                 </div>
                             </div>
 
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                                 <div>
-                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Âge*</label>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">${t('onboarding.age')}*</label>
                                     <select id="inp-age" class="form-input" onchange="updateUser('age', this.value)">
-                                        <option value="">Sélectionner...</option>
+                                        <option value="">...</option>
                                         ${['18-24', '25-34', '35-44', '45-54', '55-64', '65+'].map(a => `<option value="${a}" ${d.age === a ? 'selected' : ''}>${a}</option>`).join('')}
                                     </select>
                                 </div>
                                 <div>
-                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Occupation*</label>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">${t('onboarding.occupation')}*</label>
                                     <select id="inp-occ" class="form-input" onchange="updateUser('occupation', this.value)">
-                                        <option value="">Sélectionner...</option>
+                                        <option value="">...</option>
                                         ${['Entrepreneur', 'Cadre', 'Commercial', 'Technique', 'RH', 'Étudiant', 'Autre'].map(o => `<option value="${o}" ${d.occupation === o ? 'selected' : ''}>${o}</option>`).join('')}
                                     </select>
                                 </div>
                             </div>
 
                             <div>
-                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Email*</label>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">${t('onboarding.email')}*</label>
                                 <input type="email" id="inp-email" class="form-input" value="${d.email}" oninput="updateUser('email', this.value)" placeholder="exemple@email.com">
                             </div>
                         </div>
@@ -576,27 +690,26 @@
                          <div style="display: flex; flex-direction: column; gap: 1rem;">
                             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                                 <input type="checkbox" style="width: 20px; height: 20px;" ${d.consentAge ? 'checked' : ''} onchange="updateUser('consentAge', this.checked)">
-                                <span>Je confirme avoir 18 ans ou plus.</span>
+                                <span>${t('onboarding.consent2')}</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                                 <input type="checkbox" style="width: 20px; height: 20px;" ${d.consentTerms ? 'checked' : ''} onchange="updateUser('consentTerms', this.checked)">
-                                <span>J'ai lu et j'accepte les <a href="#" onclick="showTerms(event)" style="color: var(--primary);">conditions d'utilisation</a>.</span>
+                                <span>${t('onboarding.consent1')} <a href="#" onclick="showTerms(event)" style="color: var(--primary);">${t('onboarding.consent1_link')}</a>.</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                                 <input type="checkbox" style="width: 20px; height: 20px;" ${d.consentEmail ? 'checked' : ''} onchange="updateUser('consentEmail', this.checked)">
-                                <span>J'accepte de recevoir mes résultats par courriel.</span>
+                                <span>${t('onboarding.consent3')}</span>
                             </label>
                          </div>
                     </div>
 
                     <div style="text-align: center;">
                         <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.2rem; background-color: ${isValid ? '#10B981' : 'var(--secondary)'}; pointer-events: ${isValid ? 'auto' : 'none'}; opacity: ${isValid ? 1 : 0.5};" onclick="submitOnboarding()">
-                            DÉMARRER LE TEST
+                            ${t('onboarding.start')}
                         </button>
                     </div>
                 </div>
-
-                <!-- MODAL TERMS -->
+            `;      < !--MODAL TERMS-- >
                 <div id="terms-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
                     <div style="background: white; padding: 2rem; border-radius: 1rem; max-width: 500px; width: 90%; max-height: 80vh; display: flex; flex-direction: column;">
                         <h3>Conditions d'utilisation</h3>
@@ -664,7 +777,7 @@
             localStorage.setItem('rivest_instructions', 'true');
 
             app.innerHTML = `
-                <div class="card" style="max-width: 800px; margin: 0 auto; padding-bottom: 2rem;">
+                < div class="card" style = "max-width: 800px; margin: 0 auto; padding-bottom: 2rem;" >
                     
                     <div style="text-align: center; margin-bottom: 2rem;">
                          <span style="background: #E2E8F0; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: inline-block;">
@@ -745,8 +858,8 @@
                         </button>
                     </div>
 
-                </div>
-            `;
+                </div >
+                `;
         }
 
         function launchTest() {
@@ -791,29 +904,32 @@
                 else if (state.view === 'results') renderResults();
             } catch (e) {
                 console.error(e);
-                app.innerHTML = `<div class="card" style="color: red; padding: 2rem;">Une erreur est survenue: ${e.message}</div>`;
+                app.innerHTML = `< div class="card" style = "color: red; padding: 2rem;" > Une erreur est survenue: ${ e.message }</div > `;
             }
         }
 
         function renderHero() {
             app.innerHTML = `
-            <div class="card" style="text-align: center; padding: 4rem 2rem;">
-                <h1>Découvrez vos 10 Qualités Dominantes</h1>
-                <p style="margin-bottom: 2rem; color: var(--text-muted); font-size: 1.2rem;">
-                    Test professionnel basé sur la psychologie positive.
-                </p>
-                <button class="btn btn-primary" onclick="startTest()">COMMENCER LE TEST</button>
-            </div>
-        `;
+                < div class="card" style = "text-align: center; padding: 4rem 2rem;" >
+                    <h1>${t('onboarding.title')}</h1>
+                    <p style="margin-bottom: 2rem; color: var(--text-muted); font-size: 1.2rem;">
+                        ${t('onboarding.subtitle')}
+                    </p>
+                    <button class="btn btn-primary" onclick="startTest()">${t('onboarding.start')}</button>
+                </div >
+                `;
         }
 
         function renderTest() {
+            // Re-clear app to avoid appending duplicates if not handled correctly (though usually we clear in render())
+            app.innerHTML = ''; 
+            
             const startIdx = (state.currentPage - 1) * QUESTIONS_PER_PAGE;
             const pageQuestions = questions.slice(startIdx, startIdx + QUESTIONS_PER_PAGE);
             const percent = Math.round((state.currentPage / state.totalPages) * 100);
 
             // Update Header (Shifted Page Number)
-            progressText.innerText = `Page ${state.currentPage + 1}/${state.totalPages + 1} (Test)`;
+            progressText.innerText = `${ t('test.page') } ${ state.currentPage }/${state.totalPages}`;
 
             // Progress Bar
             const progContainer = document.createElement('div');
@@ -825,14 +941,14 @@
             app.appendChild(progContainer);
 
             // Questions
+            const labels = t('instructions.scale_labels'); // Array of 5 labels
+
             pageQuestions.forEach(q => {
                 const trait = traits.find(t => t.id === q.traitId);
                 const val = state.answers[q.id];
 
                 const qEl = document.createElement('div');
                 qEl.className = 'card';
-
-                const labels = ["FAIBLE", "OCCASIONNELLE", "MODÉRÉE", "FORTE", "DOMINANTE"];
 
                 let optionsHtml = '';
                 for (let i = 1; i <= 5; i++) {
@@ -863,9 +979,9 @@
             navEl.className = 'flex-between';
             navEl.style.marginTop = '2rem';
             navEl.innerHTML = `
-            <button class="btn btn-outline" onclick="prevPage()" ${state.currentPage === 1 ? 'disabled' : ''}>Précédent</button>
+            <button class="btn btn-outline" onclick="prevPage()" ${state.currentPage === 1 ? 'disabled' : ''}>${t('test.prev')}</button>
             <button class="btn btn-primary" onclick="nextPage()" ${!isComplete ? 'disabled' : ''}>
-                ${state.currentPage === state.totalPages ? 'Voir Résultats' : 'Suivant'}
+                ${state.currentPage === state.totalPages ? t('test.finish') : t('test.next')}
             </button>
         `;
             app.appendChild(navEl);
@@ -876,8 +992,8 @@
 
             app.innerHTML = `
             <div style="text-align: center; margin-bottom: 2rem;">
-                <h1>Vos Résultats</h1>
-                <p>Voici vos forces principales</p>
+                <h1>${t('results.title')}</h1>
+                <p>${t('results.subtitle')}</p>
             </div>
             
             <div class="card">
@@ -894,7 +1010,7 @@
             </div>
 
             <div style="text-align: center; margin-top: 3rem;">
-                <button class="btn btn-outline" onclick="resetTest()">Recommencer</button>
+                <button class="btn btn-outline" onclick="resetTest()">${t('results.restart')}</button>
             </div>
         `;
 

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { questions } from '../data/questions';
 import { traits } from '../data/traits';
 import ProgressBar from './ProgressBar';
@@ -8,6 +9,7 @@ const QUESTIONS_PER_PAGE = 5;
 const TOTAL_PAGES = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
 
 export default function QuestionnairePage({ answers, onAnswer, currentPage, setCurrentPage }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     // Scroll to top on page change
@@ -41,15 +43,12 @@ export default function QuestionnairePage({ answers, onAnswer, currentPage, setC
             <ProgressBar current={currentPage} total={TOTAL_PAGES} />
 
             <h2 style={{ marginBottom: '2rem', textAlign: 'center' }}>
-                {currentPage === TOTAL_PAGES ? "Dernière étape !" : "Évaluez les scénarios suivants"}
+                {currentPage === TOTAL_PAGES ? t('test.last_step') : t('test.page_title')}
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 {currentQuestions.map(q => {
-                    // Find trait name for context (Optional, spec showed "QUALITÉ #1: Charisma")
-                    // But spec also said "Page 1: Q1-5...". If we want to show Trait Name we look it up.
                     const trait = traits.find(t => t.id === q.traitId);
-
                     return (
                         <QuestionItem
                             key={q.id}
@@ -57,6 +56,7 @@ export default function QuestionnairePage({ answers, onAnswer, currentPage, setC
                             traitName={trait ? trait.name : ""}
                             value={answers[q.id]}
                             onChange={(val) => onAnswer(q.id, val)}
+                            t={t}
                         />
                     );
                 })}
@@ -69,7 +69,7 @@ export default function QuestionnairePage({ answers, onAnswer, currentPage, setC
                     disabled={currentPage === 1}
                     style={{ visibility: currentPage === 1 ? 'hidden' : 'visible' }}
                 >
-                    Précédent
+                    {t('test.prev')}
                 </button>
 
                 <button
@@ -78,15 +78,15 @@ export default function QuestionnairePage({ answers, onAnswer, currentPage, setC
                     disabled={!isPageComplete}
                     style={{ opacity: isPageComplete ? 1 : 0.5, cursor: isPageComplete ? 'pointer' : 'not-allowed' }}
                 >
-                    {currentPage === TOTAL_PAGES ? "Voir mes résultats" : "Suivant"}
+                    {currentPage === TOTAL_PAGES ? t('test.finish') : t('test.next')}
                 </button>
             </div>
         </div>
     );
 }
 
-function QuestionItem({ question, traitName, value, onChange }) {
-    const labels = ["FAIBLE", "OCCASIONNELLE", "MODÉRÉE", "FORTE", "DOMINANTE"];
+function QuestionItem({ question, traitName, value, onChange, t }) {
+    const labels = t('instructions.scale_labels', { returnObjects: true }) || [];
 
     return (
         <div className="card">
@@ -101,7 +101,7 @@ function QuestionItem({ question, traitName, value, onChange }) {
                     <LikertOption
                         key={rating}
                         value={rating}
-                        label={labels[idx]}
+                        label={labels[idx] || ""}
                         selected={value === rating}
                         onSelect={() => onChange(rating)}
                     />
@@ -112,10 +112,6 @@ function QuestionItem({ question, traitName, value, onChange }) {
 }
 
 function LikertOption({ value, label, selected, onSelect }) {
-    // Styles for the radio box
-    const size = selected ? '50px' : '40px'; // Keep size similar, maybe slight grow
-    // Actually standalone uses fixed width container mostly.
-
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, minWidth: '50px', maxWidth: '80px' }}>
             <button

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function ConsentForm({ data, onChange }) {
+export default function ConsentForm({ data, onChange, t }) {
     const [showTerms, setShowTerms] = useState(false);
 
     return (
@@ -9,7 +9,7 @@ export default function ConsentForm({ data, onChange }) {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <Checkbox
-                    label="Je confirme avoir 18 ans ou plus."
+                    label={t('onboarding.consent2')}
                     checked={data.consentAge}
                     onChange={(val) => onChange('consentAge', val)}
                 />
@@ -17,7 +17,8 @@ export default function ConsentForm({ data, onChange }) {
                 <Checkbox
                     label={
                         <span>
-                            J'ai lu et j'accepte les <button onClick={() => setShowTerms(true)} style={linkStyle}>conditions d'utilisation</button>.
+                            {t('onboarding.consent1')}
+                            <button onClick={() => setShowTerms(true)} style={linkStyle}>*</button>.
                         </span>
                     }
                     checked={data.consentTerms}
@@ -25,7 +26,7 @@ export default function ConsentForm({ data, onChange }) {
                 />
 
                 <Checkbox
-                    label="J'accepte de recevoir mes résultats par courriel."
+                    label={t('onboarding.consent3')}
                     checked={data.consentEmail}
                     onChange={(val) => onChange('consentEmail', val)}
                 />

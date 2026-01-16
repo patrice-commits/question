@@ -1,0 +1,51 @@
+{
+    "onboarding": {
+        "title": "Test de Talent RIVEST",
+        "subtitle": "Découvrez vos 30 qualités dominantes",
+        "name": "NOM",
+        "firstname": "PRÉNOM",
+        "age": "ÂGE",
+        "occupation": "OCCUPATION",
+        "email": "COURRIEL",
+        "consent1": "J'ai lu les conditions d'utilisation",
+        "consent2": "Je confirme avoir 18 ans ou plus",
+        "consent3": "J'accepte de recevoir mes résultats par courriel",
+        "start": "DÉMARRER LE TEST",
+        "page": "Page 0/41"
+    },
+    "instructions": {
+        "title": "Instructions Finales",
+        "subtitle": "Comment répondre pour des résultats précis",
+        "time_title": "Temps & Navigation",
+        "time_desc": "✅ ~200 questions (40 pages)\n✅ ~15 secondes/question\n✅ Sauvegarde auto",
+        "scale_title": "L'Échelle 1-5",
+        "scale_desc": "Imaginez une situation de crise...",
+        "tips_title": "Conseils d'Honnêteté",
+        "tips_desc": "✅ Réalité ACTUELLE\n✅ Exemples récents\n✅ Spontanéité",
+        "results_title": "Ce que vous obtiendrez",
+        "results_desc": "🏆 TOP 10 Qualités\n📊 Graphiques\n💾 Export",
+        "ready": "Vous êtes prêt(e) !",
+        "cta": "JE COMPRENDS → COMMENCER",
+        "scale_labels": {
+            "1": "FAIBLE",
+            "2": "OCCASIONNELLE",
+            "3": "MODÉRÉE",
+            "4": "FORTE",
+            "5": "DOMINANTE"
+        }
+    },
+    "test": {
+        "page_title": "Évaluez les scénarios suivants",
+        "last_step": "Dernière étape !",
+        "next": "Suivant",
+        "prev": "Précédent",
+        "finish": "Voir mes résultats",
+        "progress": "Page {{current}}/{{total}} (Test)"
+    },
+    "results": {
+        "title": "Vos Résultats",
+        "subtitle": "Voici vos forces principales",
+        "restart": "Recommencer",
+        "chart_label": "Score"
+    }
+}

@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import LikertScaleDemo from './LikertScaleDemo';
 import { Clock, Target, Lightbulb, BarChart3, ArrowRight } from 'lucide-react';
 
+import { useTranslation } from 'react-i18next';
+
 export default function InstructionsPage({ totalPages = 42 }) {
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
 
     const handleStart = () => {
         localStorage.setItem('rivest_instructions', 'true');
@@ -20,10 +23,10 @@ export default function InstructionsPage({ totalPages = 42 }) {
                     Page 1/{totalPages + 1}
                 </span>
                 <h1 style={{ marginTop: '1rem', background: '-webkit-linear-gradient(45deg, #1E3A8A, #2BC0D2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                    Instructions Finales
+                    {t('instructions.title')}
                 </h1>
                 <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>
-                    Comment répondre pour des résultats précis
+                    {t('instructions.subtitle')}
                 </p>
             </div>
 
@@ -33,47 +36,34 @@ export default function InstructionsPage({ totalPages = 42 }) {
                 {/* SECTION 1: TEMPS */}
                 <InstructionCard
                     icon={<Clock color="var(--primary)" />}
-                    title="Temps & Navigation"
+                    title={t('instructions.time_title')}
                 >
-                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li style={liStyle}>✅ <strong>~200 questions</strong> au total (40 pages)</li>
-                        <li style={liStyle}>✅ Environ 15 secondes par question (~45 min)</li>
-                        <li style={liStyle}>✅ Sauvegarde automatique (pause possible)</li>
-                    </ul>
+                    <div style={{ whiteSpace: 'pre-line' }}>{t('instructions.time_desc')}</div>
                 </InstructionCard>
 
                 {/* SECTION 2: ÉCHELLE */}
                 <InstructionCard
                     icon={<Target color="var(--primary)" />}
-                    title="L'Échelle 1-5"
+                    title={t('instructions.scale_title')}
                 >
-                    <p style={{ marginBottom: '1rem' }}>Utilisez toute l'échelle pour nuancer votre profil.</p>
-                    <LikertScaleDemo />
+                    <p style={{ marginBottom: '1rem' }}>{t('instructions.scale_desc')}</p>
+                    <LikertScaleDemo t={t} />
                 </InstructionCard>
 
                 {/* SECTION 3: CONSEILS */}
                 <InstructionCard
                     icon={<Lightbulb color="var(--primary)" />}
-                    title="Conseils d'Honnêteté"
+                    title={t('instructions.tips_title')}
                 >
-                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li style={liStyle}>✅ Répondez selon votre <strong>réalité actuelle</strong> (pas vos souhaits)</li>
-                        <li style={liStyle}>✅ Pensez à vos 3 derniers mois</li>
-                        <li style={liStyle}>✅ Répondez spontanément (première impression)</li>
-                        <li style={liStyle}>🚫 Il n'y a pas de "bonnes" ou "mauvaises" réponses</li>
-                    </ul>
+                    <div style={{ whiteSpace: 'pre-line' }}>{t('instructions.tips_desc')}</div>
                 </InstructionCard>
 
                 {/* SECTION 4: RÉSULTATS */}
                 <InstructionCard
                     icon={<BarChart3 color="var(--primary)" />}
-                    title="Ce que vous obtiendrez"
+                    title={t('instructions.results_title')}
                 >
-                    <ul style={{ listStyle: 'none', padding: 0 }}>
-                        <li style={liStyle}>🏆 Votre TOP 10 des qualités dominantes</li>
-                        <li style={liStyle}>📊 Graphique radar complet</li>
-                        <li style={liStyle}>💾 Export des résultats</li>
-                    </ul>
+                    <div style={{ whiteSpace: 'pre-line' }}>{t('instructions.results_desc')}</div>
                 </InstructionCard>
 
             </div>
@@ -81,7 +71,7 @@ export default function InstructionsPage({ totalPages = 42 }) {
             {/* FOOTER CTA */}
             <div style={{ marginTop: '3rem', textAlign: 'center' }}>
                 <p style={{ marginBottom: '1rem', fontWeight: 600, color: 'var(--accent)' }}>
-                    Vous êtes prêt(e) pour découvrir vos 30 qualités dominantes !
+                    {t('instructions.ready')}
                 </p>
                 <button
                     className="btn btn-primary"
@@ -95,7 +85,7 @@ export default function InstructionsPage({ totalPages = 42 }) {
                         boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
                     }}
                 >
-                    JE COMPRENDS → COMMENCER <ArrowRight style={{ marginLeft: '8px', display: 'inline' }} size={20} />
+                    {t('instructions.cta')} <ArrowRight style={{ marginLeft: '8px', display: 'inline' }} size={20} />
                 </button>
             </div>
 
