@@ -5,7 +5,7 @@ import { traits } from '../data/traits';
 import ProgressBar from './ProgressBar';
 
 const QUESTIONS_PER_PAGE = 5;
-const TOTAL_PAGES = 20;
+const TOTAL_PAGES = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
 
 export default function QuestionnairePage({ answers, onAnswer, currentPage, setCurrentPage }) {
     const navigate = useNavigate();
