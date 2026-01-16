@@ -1,13 +1,623 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test de Talent RIVEST</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test de Talent RIVEST</title>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* RIVEST.css Content */
+    :root {
+      --primary: #2BC0D2;
+      --primary-hover: #2299A8;
+      --secondary: #9CA3AF;
+      --accent: #1E3A8A;
+      --bg-app: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --success: #10B981;
+      --border: #E2E8F0;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 2rem;
+      --radius-md: 0.75rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding-bottom: 50px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+
+    h2 {
+      margin-bottom: 1.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 2rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .likert-scale {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .likert-opt {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 2px solid #CBD5E1;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .likert-opt.selected {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: scale(1.1);
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #E2E8F0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      transition: width 0.3s;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container flex-between">
+      <span class="logo-text">RIVEST</span>
+      <span id="progress-text" style="font-size: 0.9rem; color: var(--text-muted)"></span>
+    </div>
+  </header>
+
+  <div id="app" class="container">
+    <!-- Views will be injected here -->
+  </div>
+
+  <script>
+    // --- DATA V2 (30 Traits, 207 Questions - Generated Content) ---
+    const traits = [
+      { id: 1, name: "Leadership" }, { id: 2, name: "Charisme" }, { id: 3, name: "Persuasion" }, { id: 4, name: "Inspiration" },
+      { id: 5, name: "Initiative" }, { id: 6, name: "Vision" }, { id: 7, name: "Ambition" }, { id: 8, name: "Esprit Analytique" },
+      { id: 9, name: "Créativité" }, { id: 10, name: "Esprit Critique" }, { id: 11, name: "Innovation" }, { id: 12, name: "Curiosité" },
+      { id: 13, name: "Intuition" }, { id: 14, name: "Détermination" }, { id: 15, name: "Persévérance" }, { id: 16, name: "Résilience" },
+      { id: 17, name: "Ténacité" }, { id: 18, name: "Excellence" }, { id: 19, name: "Autodiscipline" }, { id: 20, name: "Calme" },
+      { id: 21, name: "Empathie" }, { id: 22, name: "Écoute Active" }, { id: 23, name: "Coopération" }, { id: 24, name: "Travail d'Équipe" },
+      { id: 25, name: "Diplomatie" }, { id: 26, name: "Respect" }, { id: 27, name: "Optimisme" }, { id: 28, name: "Flexibilité" },
+      { id: 29, name: "Maîtrise de Soi" }, { id: 30, name: "Intégrité" }
+    ];
+
+    // Mapped & Generated Questions
+    const questions = [
+      { id: 1, traitId: 1, text: "Je prends naturellement la direction des opérations en situation de groupe." },
+      { id: 2, traitId: 21, text: "Je ressens facilement les émotions des autres." },
+      { id: 3, traitId: 9, text: "J'ai souvent des idées originales qui sortent de l'ordinaire." },
+      { id: 4, traitId: 14, text: "Une fois décidé, rien ne peut me faire changer de cap." },
+      { id: 5, traitId: 2, text: "Je capte facilement l'attention lorsque je parle." },
+      { id: 6, traitId: 6, text: "J'anticipe les tendances futures avant les autres." },
+      { id: 7, traitId: 24, text: "Je connais mon rôle dans l'équipe et je le tiens." },
+      { id: 8, traitId: 19, text: "Je respecte mes propres règles et horaires." },
+      { id: 9, traitId: 5, text: "J'agis sans attendre les instructions." },
+      { id: 10, traitId: 27, text: "Je vois le verre à moitié plein." },
+      { id: 11, traitId: 4, text: "J'éveille chez les autres le désir de se dépasser." },
+      { id: 12, traitId: 8, text: "Je décompose les problèmes complexes en éléments simples." },
+      { id: 13, traitId: 28, text: "Je m'adapte facilement aux changements de dernière minute." },
+      { id: 14, traitId: 17, text: "Je m'accroche à mes tâches comme un pitbull." },
+      { id: 15, traitId: 3, text: "Je trouve facilement les arguments pour convaincre." },
+      { id: 16, traitId: 22, text: "J'écoute pour comprendre, pas pour répondre." },
+      { id: 17, traitId: 16, text: "Je rebondis rapidement après un coup dur." },
+      { id: 18, traitId: 23, text: "J'aime travailler en synergie avec les autres." },
+      { id: 19, traitId: 10, text: "Je remets en question les idées reçues." },
+      { id: 20, traitId: 20, text: "Je reste serein même quand tout le monde panique." },
+      { id: 21, traitId: 7, text: "Je vise toujours le sommet." },
+      { id: 22, traitId: 11, text: "Je cherche toujours une meilleure façon de faire les choses." },
+      { id: 23, traitId: 12, text: "J'ai soif d'apprendre sur tous les sujets." },
+      { id: 24, traitId: 13, text: "Je 'sens' souvent les choses avant de les comprendre." },
+      { id: 25, traitId: 15, text: "Je continue d'avancer même quand c'est difficile." },
+      { id: 26, traitId: 18, text: "Je vise la perfection dans les détails." },
+      { id: 27, traitId: 25, text: "Je sais dire les vérités difficiles sans blesser." },
+      { id: 28, traitId: 26, text: "Je traite tout le monde avec la même considération." },
+      { id: 29, traitId: 29, text: "Je garde le contrôle de mes émotions." },
+      { id: 30, traitId: 30, text: "Je suis honnête même quand personne ne regarde." },
+      { id: 31, traitId: 1, text: "Les gens se tournent vers moi pour savoir quoi faire." },
+      { id: 32, traitId: 21, text: "Je sais me mettre à la place de l'autre." },
+      { id: 33, traitId: 9, text: "J'aime trouver des solutions inédites aux problèmes." },
+      { id: 34, traitId: 14, text: "Je poursuis mes buts avec une volonté de fer." },
+      { id: 35, traitId: 2, text: "On me dit souvent que j'ai une présence marquante." },
+      { id: 36, traitId: 6, text: "J'ai une image claire de mes objectifs à long terme." },
+      { id: 37, traitId: 24, text: "Je valorise la contribution de chacun." },
+      { id: 38, traitId: 19, text: "Je n'ai pas besoin de surveillance pour travailler." },
+      { id: 39, traitId: 5, text: "Je vois ce qu'il faut faire et je le fais immédiatement." },
+      { id: 40, traitId: 27, text: "Je crois que les choses vont s'arranger." },
+      { id: 41, traitId: 4, text: "Je communique une vision qui donne du sens à l'action." },
+      { id: 42, traitId: 8, text: "Je m'appuie sur les faits et les données pour décider." },
+      { id: 43, traitId: 28, text: "Je ne suis pas rigide sur la manière de faire." },
+      { id: 44, traitId: 17, text: "Je défends mes positions avec vigueur." },
+      { id: 45, traitId: 3, text: "J'aime négocier et trouver des terrains d'entente." },
+      { id: 46, traitId: 22, text: "Je ne coupe pas la parole." },
+      { id: 47, traitId: 16, text: "Je gère bien le stress et la pression." },
+      { id: 48, traitId: 23, text: "Je partage volontiers mes ressources et informations." },
+      { id: 49, traitId: 10, text: "J'évalue la crédibilité des sources d'information." },
+      { id: 50, traitId: 20, text: "Je prends le temps de réfléchir avant de réagir." },
+      { id: 51, traitId: 7, text: "Je ne me contente pas de résultats moyens." },
+      { id: 52, traitId: 11, text: "J'aime utiliser les nouvelles technologies ou méthodes." },
+      { id: 53, traitId: 12, text: "Je pose beaucoup de questions." },
+      { id: 54, traitId: 13, text: "Mes premières impressions sont souvent justes." },
+      { id: 55, traitId: 15, text: "L'échec ne m'arrête pas, il m'instruit." },
+      { id: 56, traitId: 18, text: "Je suis fier de produire un travail de haute qualité." },
+      { id: 57, traitId: 25, text: "Je gère les sensibilités avec tact." },
+      { id: 58, traitId: 26, text: "Je suis poli et courtois en toutes circonstances." },
+      { id: 59, traitId: 29, text: "Je ne cède pas à la provocation." },
+      { id: 60, traitId: 30, text: "Je tiens mes promesses quoi qu'il en coûte." },
+      { id: 61, traitId: 1, text: "Je n'hésite pas à prendre des décisions difficiles pour le bien de l'équipe." },
+      { id: 62, traitId: 21, text: "Je suis touché par la souffrance d'autrui." },
+      { id: 63, traitId: 9, text: "Je vois les choses sous un angle différent des autres." },
+      { id: 64, traitId: 14, text: "Je suis concentré totalement sur la réussite." },
+      { id: 65, traitId: 2, text: "Je me fais facilement des amis ou des contacts." },
+      { id: 66, traitId: 6, text: "Je vois la 'grande image' plutôt que seulement les détails." },
+      { id: 67, traitId: 24, text: "Je célèbre les succès du groupe." },
+      { id: 68, traitId: 19, text: "Je maîtrise mes impulsions." },
+      { id: 69, traitId: 5, text: "Je propose souvent de nouvelles idées ou améliorations." },
+      { id: 70, traitId: 27, text: "Je cherche le positif dans chaque situation." },
+      { id: 71, traitId: 4, text: "Mes paroles redonnent souvent espoir ou courage." },
+      { id: 72, traitId: 8, text: "Je repère facilement les failles dans un raisonnement." },
+      { id: 73, traitId: 28, text: "Je suis ouvert à modifier mes plans." },
+      { id: 74, traitId: 17, text: "Je ne recule pas devant l'effort intense." },
+      { id: 75, traitId: 3, text: "Je sais faire changer d'avis quelqu'un avec tact." },
+      { id: 76, traitId: 22, text: "Je pose des questions pour clarifier ce que j'entends." },
+      { id: 77, traitId: 16, text: "Je garde le moral même dans l'adversité." },
+      { id: 78, traitId: 23, text: "Je cherche le consensus." },
+      { id: 79, traitId: 10, text: "Je ne prends pas tout ce qu'on me dit pour acquis." },
+      { id: 80, traitId: 20, text: "Ma présence apaise les autres." },
+      { id: 81, traitId: 7, text: "J'ai soif de réussite et de progression." },
+      { id: 82, traitId: 11, text: "Je n'ai pas peur de briser les traditions pour progresser." },
+      { id: 83, traitId: 12, text: "Je m'intéresse sincèrement au fonctionnement du monde." },
+      { id: 84, traitId: 13, text: "Je fais confiance à mon instinct dans l'incertitude." },
+      { id: 85, traitId: 15, text: "Je suis capable d'efforts soutenus sur une longue période." },
+      { id: 86, traitId: 18, text: "Je ne supporte pas la médiocrité." },
+      { id: 87, traitId: 25, text: "Je suis doué pour désamorcer les tensions." },
+      { id: 88, traitId: 26, text: "Je respecte les limites des autres." },
+      { id: 89, traitId: 29, text: "Je suis capable de différer une gratification." },
+      { id: 90, traitId: 30, text: "Mes actions sont alignées avec mes valeurs." },
+      { id: 91, traitId: 1, text: "J'aime guider les autres vers l'atteinte de leurs objectifs." },
+      { id: 92, traitId: 21, text: "Je comprends les points de vue différents du mien." },
+      { id: 93, traitId: 9, text: "L'expression artistique ou l'invention me stimule." },
+      { id: 94, traitId: 14, text: "Les distractions ne m'éloignent pas de mon objectif." },
+      { id: 95, traitId: 2, text: "Je sais mettre les gens à l'aise rapidement." },
+      { id: 96, traitId: 6, text: "Je connecte des idées apparemment sans lien." },
+      { id: 97, traitId: 24, text: "Je soutiens les décisions collectives." },
+      { id: 98, traitId: 19, text: "Je sais dire non aux distractions." },
+      { id: 99, traitId: 5, text: "Je n'ai pas peur d'être le premier à essayer quelque chose." },
+      { id: 100, traitId: 27, text: "Mon attitude positive encourage les autres." },
+      { id: 101, traitId: 4, text: "Je suis vu comme un modèle par mon entourage." },
+      { id: 102, traitId: 8, text: "J'aime comprendre le fonctionnement logique des choses." },
+      { id: 103, traitId: 28, text: "Je sais improviser quand c'est nécessaire." },
+      { id: 104, traitId: 17, text: "Je suis opiniâtre quand je sais que j'ai raison." },
+      { id: 105, traitId: 3, text: "Je vends mes idées avec aisance." },
+      { id: 106, traitId: 22, text: "Je retiens bien ce qu'on me dit." },
+      { id: 107, traitId: 16, text: "Je sais m'adapter aux crises." },
+      { id: 108, traitId: 23, text: "Je ne joue pas perso, je joue collectif." },
+      { id: 109, traitId: 10, text: "Je cherche les biais cachés dans un argument." },
+      { id: 110, traitId: 20, text: "Je ne laisse pas la colère me dominer." },
+      { id: 111, traitId: 7, text: "Je me fixe des objectifs très élevés." },
+      { id: 112, traitId: 11, text: "Je transforme les problèmes en opportunités d'invention." },
+      { id: 113, traitId: 12, text: "J'aime découvrir de nouvelles cultures ou idées." },
+      { id: 114, traitId: 13, text: "Je devine les intentions des gens." },
+      { id: 115, traitId: 15, text: "Je ne lâche pas prise facilement." },
+      { id: 116, traitId: 18, text: "Je cherche constamment à m'améliorer." },
+      { id: 117, traitId: 25, text: "Je trouve les mots justes dans les situations délicates." },
+      { id: 118, traitId: 26, text: "Je ne juge pas les gens hâtivement." },
+      { id: 119, traitId: 29, text: "Je reste professionnel sous la pression." },
+      { id: 120, traitId: 30, text: "Je refuse les compromissions éthiques." },
+      { id: 121, traitId: 1, text: "Je me sens à l'aise d'assumer la responsabilité des résultats collectifs." },
+      { id: 122, traitId: 21, text: "Je suis attentif aux besoins émotionnels des gens." },
+      { id: 123, traitId: 9, text: "Je n'ai pas peur de penser 'en dehors de la boîte'." },
+      { id: 124, traitId: 14, text: "Je suis prêt à faire les sacrifices nécessaires." },
+      { id: 125, traitId: 2, text: "Mon enthousiasme est souvent contagieux." },
+      { id: 126, traitId: 6, text: "Je prévois les obstacles potentiels bien à l'avance." },
+      { id: 127, traitId: 24, text: "Je suis un joueur d'équipe fiable." },
+      { id: 128, traitId: 19, text: "Je suis constant dans mes habitudes." },
+      { id: 129, traitId: 5, text: "Je prends les devants pour résoudre les problèmes." },
+      { id: 130, traitId: 27, text: "Je ne me laisse pas décourager par le pessimisme." },
+      { id: 131, traitId: 4, text: "J'aime partager ma passion pour stimuler les autres." },
+      { id: 132, traitId: 8, text: "Je suis rigoureux dans mon traitement de l'information." },
+      { id: 133, traitId: 28, text: "Je tolère bien l'ambiguïté." },
+      { id: 134, traitId: 17, text: "Je surmonte les obstacles par la force de mon travail." },
+      { id: 135, traitId: 3, text: "Je comprends ce qui motive les autres pour mieux les influencer." },
+      { id: 136, traitId: 22, text: "Je donne toute mon attention à mon interlocuteur." },
+      { id: 137, traitId: 16, text: "Je tire des leçons positives des épreuves." },
+      { id: 138, traitId: 23, text: "Je suis prêt à aider un collègue en difficulté." },
+      { id: 139, traitId: 10, text: "J'analyse les pour et les contre avant de juger." },
+      { id: 140, traitId: 20, text: "Je gère les conflits sans élever la voix." },
+      { id: 141, traitId: 7, text: "Je cherche constamment à monter les échelons." },
+      { id: 142, traitId: 11, text: "Je suis souvent à l'avant-garde du changement." },
+      { id: 143, traitId: 12, text: "L'inconnu me fascine plutôt que de m'effrayer." },
+      { id: 144, traitId: 13, text: "Je perçois ce qui n'est pas dit explicitement." },
+      { id: 145, traitId: 15, text: "La patience dans l'effort est une de mes qualités." },
+      { id: 146, traitId: 18, text: "Je dépasse souvent les attentes." },
+      { id: 147, traitId: 25, text: "Je respecte le protocole et les convenances." },
+      { id: 148, traitId: 26, text: "Je valorise la diversité des opinions." },
+      { id: 149, traitId: 29, text: "Je maîtrise mes peurs." },
+      { id: 150, traitId: 30, text: "On peut compter sur ma parole." },
+      { id: 151, traitId: 1, text: "Je sais déléguer les tâches efficacement selon les forces de chacun." },
+      { id: 152, traitId: 21, text: "Je sais consoler et soutenir." },
+      { id: 153, traitId: 9, text: "J'apporte souvent une touche de nouveauté." },
+      { id: 154, traitId: 14, text: "Ma volonté est ma plus grande force." },
+      { id: 155, traitId: 2, text: "J'ai de la facilité à entraîner les autres dans mes projets." },
+      { id: 156, traitId: 6, text: "Je sais où je veux amener mon équipe ou mon projet dans 5 ans." },
+      { id: 157, traitId: 24, text: "Je favorise la cohésion du groupe." },
+      { id: 158, traitId: 19, text: "Je fais ce qui doit être fait, même sans envie." },
+      { id: 159, traitId: 5, text: "Je suis proactif plutôt que réactif." },
+      { id: 160, traitId: 27, text: "Je vois les problèmes comme des défis temporaires." },
+      { id: 161, traitId: 4, text: "Je valorise les talents des autres pour qu'ils croient en eux." },
+      { id: 162, traitId: 8, text: "Je ne tire pas de conclusions hâtives." },
+      { id: 163, traitId: 28, text: "Je suis polyvalent." },
+      { id: 164, traitId: 17, text: "Rien ne résiste à mon acharnement positif." },
+      { id: 165, traitId: 3, text: "Je sais rallier les sceptiques à ma cause." },
+      { id: 166, traitId: 22, text: "Je sais lire entre les lignes dans une conversation." },
+      { id: 167, traitId: 16, text: "Je ne me laisse pas abattre par les critiques." },
+      { id: 168, traitId: 23, text: "Je privilégie l'entente cordiale." },
+      { id: 169, traitId: 10, text: "J'aime les débats intellectuels." },
+      { id: 170, traitId: 20, text: "Je suis une force tranquille." },
+      { id: 171, traitId: 7, text: "Je veux laisser une marque importante dans mon domaine." },
+      { id: 172, traitId: 11, text: "J'expérimente volontiers des approches non testées." },
+      { id: 173, traitId: 12, text: "Je lis ou m'informe constamment." },
+      { id: 174, traitId: 13, text: "Je prends parfois des décisions 'au feeling' qui s'avèrent bonnes." },
+      { id: 175, traitId: 15, text: "Je recommence autant de fois qu'il le faut." },
+      { id: 176, traitId: 18, text: "Je suis méticuleux et rigoureux." },
+      { id: 177, traitId: 25, text: "Je suis un médiateur naturel." },
+      { id: 178, traitId: 26, text: "Je suis attentif à ne pas froisser autrui." },
+      { id: 179, traitId: 29, text: "Je suis constant dans mon humeur." },
+      { id: 181, traitId: 1, text: "Je crée un climat de confiance qui motive l'action." },
+      { id: 182, traitId: 21, text: "Je suis perçu comme quelqu'un de compatissant." },
+      { id: 183, traitId: 9, text: "Je connecte l'imaginaire au réel." },
+      { id: 184, traitId: 14, text: "Je vais jusqu'au bout de mes engagements." },
+      { id: 185, traitId: 2, text: "Je laisse une impression durable après une première rencontre." },
+      { id: 186, traitId: 6, text: "Je pense stratégiquement." },
+      { id: 187, traitId: 24, text: "Je fais passer l'intérêt du groupe avant le mien." },
+      { id: 189, traitId: 5, text: "J'aime lancer de nouveaux projets." },
+      { id: 190, traitId: 27, text: "J'ai confiance en l'avenir." },
+      { id: 191, traitId: 4, text: "Je sais transformer une vision abstraite en une mission motivante." },
+      { id: 192, traitId: 8, text: "J'aime organiser l'information de manière structurée." },
+      { id: 194, traitId: 17, text: "Je suis endurant face à la difficulté." },
+      { id: 196, traitId: 22, text: "Les gens se sentent vraiment écoutés avec moi." },
+      { id: 197, traitId: 16, text: "Je suis solide émotionnellement." },
+      { id: 198, traitId: 23, text: "Je suis facile à vivre au travail." },
+      { id: 199, traitId: 10, text: "Je distingue facilement l'opinion du fait." },
+      { id: 200, traitId: 20, text: "Je garde mon sang-froid en situation critique." },
+      { id: 201, traitId: 7, text: "Le statu quo ne me satisfait jamais." },
+      { id: 202, traitId: 11, text: "Je favorise le progrès continu." },
+      { id: 203, traitId: 12, text: "Je ne m'ennuie jamais car tout m'intéresse." },
+      { id: 204, traitId: 13, text: "J'ai du flair pour les opportunités." },
+      { id: 205, traitId: 15, text: "Je finis ce que je commence." },
+      { id: 206, traitId: 18, text: "La qualité est ma priorité absolue." },
+      { id: 207, traitId: 25, text: "Je préserve l'harmonie dans mes relations." }
+    ];
+
+    questions.sort((a, b) => a.id - b.id);
+
+    // --- STATE ---
+    let state = {
+      view: 'hero',
+      currentPage: 1,
+      answers: {},
+      totalPages: Math.ceil(questions.length / 5) // Dynamic total pages
+    };
+
+    const QUESTIONS_PER_PAGE = 5;
+
+    // --- DOM ELEMENTS ---
+    const app = document.getElementById('app');
+    const progressText = document.getElementById('progress-text');
+
+    // --- LOGIC ---
+    function init() {
+      const savedAns = localStorage.getItem('rivest_answers_v2'); // New storage key for v2
+      if (savedAns) state.answers = JSON.parse(savedAns);
+
+      const savedPage = localStorage.getItem('rivest_page_v2');
+      if (savedPage) state.currentPage = parseInt(savedPage);
+
+      render();
+    }
+
+    function setAnswer(qId, val) {
+      state.answers[qId] = val;
+      localStorage.setItem('rivest_answers_v2', JSON.stringify(state.answers));
+      render();
+    }
+
+    function nextPage() {
+      if (state.currentPage < state.totalPages) {
+        state.currentPage++;
+        localStorage.setItem('rivest_page_v2', state.currentPage);
+        render();
+        window.scrollTo(0, 0);
+      } else {
+        state.view = 'results';
+        render();
+      }
+    }
+
+    function prevPage() {
+      if (state.currentPage > 1) {
+        state.currentPage--;
+        localStorage.setItem('rivest_page_v2', state.currentPage);
+        render();
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function startTest() {
+      state.view = 'test';
+      render();
+    }
+
+    function resetTest() {
+      if (confirm('Recommencer ?')) {
+        state.answers = {};
+        state.currentPage = 1;
+        state.view = 'hero';
+        localStorage.clear(); // Clears all
+        render();
+      }
+    }
+
+    function calculateStats() {
+      const results = traits.map(t => {
+        // Find questions that belong to this trait by looking at the Q array
+        const traitQuestions = questions.filter(q => q.traitId === t.id);
+
+        if (traitQuestions.length === 0) return { ...t, score: 0 };
+
+        const sum = traitQuestions.reduce((acc, q) => acc + (state.answers[q.id] || 0), 0);
+        return {
+          ...t,
+          score: sum / traitQuestions.length // Average
+        };
+      });
+      return results.sort((a, b) => b.score - a.score).slice(0, 10);
+    }
+    // --- RENDERERS ---
+    function render() {
+      app.innerHTML = '';
+      progressText.innerText = '';
+
+      if (state.view === 'hero') renderHero();
+      else if (state.view === 'test') renderTest();
+      else if (state.view === 'results') renderResults();
+    }
+
+    function renderHero() {
+      app.innerHTML = `
+            <div class="card" style="text-align: center; padding: 4rem 2rem;">
+                <h1>Découvrez vos 10 Qualités Dominantes</h1>
+                <p style="margin-bottom: 2rem; color: var(--text-muted); font-size: 1.2rem;">
+                    Test professionnel basé sur la psychologie positive.
+                </p>
+                <button class="btn btn-primary" onclick="startTest()">COMMENCER LE TEST</button>
+            </div>
+        `;
+    }
+
+    function renderTest() {
+      const startIdx = (state.currentPage - 1) * QUESTIONS_PER_PAGE;
+      const pageQuestions = questions.slice(startIdx, startIdx + QUESTIONS_PER_PAGE);
+      const percent = Math.round((state.currentPage / state.totalPages) * 100);
+
+      // Update Header
+      progressText.innerText = `Page ${state.currentPage}/${state.totalPages}`;
+
+      // Progress Bar
+      const progContainer = document.createElement('div');
+      progContainer.innerHTML = `
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${percent}%"></div>
+            </div>
+        `;
+      app.appendChild(progContainer);
+
+      // Questions
+      pageQuestions.forEach(q => {
+        const trait = traits.find(t => t.id === q.traitId);
+        const val = state.answers[q.id];
+
+        const qEl = document.createElement('div');
+        qEl.className = 'card';
+
+        let optionsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+          const isSel = val === i ? 'selected' : '';
+          optionsHtml += `<button class="likert-opt ${isSel}" onclick="setAnswer(${q.id}, ${i})">${i}</button>`;
+        }
+
+        qEl.innerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <div style="font-size: 1.1rem; margin-top: 0.5rem;"><strong>#${q.id}</strong> "${q.text}"</div>
+                </div>
+                <div class="likert-scale">
+                    ${optionsHtml}
+                </div>
+            `;
+        app.appendChild(qEl);
+      });
+
+      // Navigation
+      const isComplete = pageQuestions.every(q => state.answers[q.id]);
+
+      const navEl = document.createElement('div');
+      navEl.className = 'flex-between';
+      navEl.style.marginTop = '2rem';
+      navEl.innerHTML = `
+            <button class="btn btn-outline" onclick="prevPage()" ${state.currentPage === 1 ? 'disabled' : ''}>Précédent</button>
+            <button class="btn btn-primary" onclick="nextPage()" ${!isComplete ? 'disabled' : ''}>
+                ${state.currentPage === state.totalPages ? 'Voir Résultats' : 'Suivant'}
+            </button>
+        `;
+      app.appendChild(navEl);
+    }
+
+    function renderResults() {
+      const top10 = calculateStats();
+
+      app.innerHTML = `
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1>Vos Résultats</h1>
+                <p>Voici vos forces principales</p>
+            </div>
+            
+            <div class="card">
+                <canvas id="resultsChart"></canvas>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                ${top10.map((t, i) => `
+                    <div class="card" style="flex: 1 1 200px; text-align: center; border-top: 4px solid var(--primary);">
+                        <h3>#${i + 1} ${t.name}</h3>
+                        <div style="font-size: 2rem; font-weight: bold; color: var(--primary);">${t.score.toFixed(1)}</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <button class="btn btn-outline" onclick="resetTest()">Recommencer</button>
+            </div>
+        `;
+
+      // Render Chart
+      setTimeout(() => {
+        const ctx = document.getElementById('resultsChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: top10.map(t => t.name),
+            datasets: [{
+              label: 'Score',
+              data: top10.map(t => t.score),
+              backgroundColor: '#2BC0D2',
+              borderRadius: 4
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true
+          }
+        });
+      }, 100);
+    }
+
+    // Start
+    init();
+
+  </script>
+</body>
+
 </html>
