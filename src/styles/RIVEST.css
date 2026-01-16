@@ -1,0 +1,118 @@
+:root {
+  /* Brand Colors extracted from Logo */
+  --primary: #2BC0D2; /* Teal */
+  --primary-hover: #2299A8;
+  --secondary: #9CA3AF; /* Grey */
+  --accent: #1E3A8A; /* Deep Blue - specific requests or text */
+  
+  /* Functional Colors */
+  --bg-app: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --success: #10B981;
+  --border: #E2E8F0;
+
+  /* Spacing */
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+  
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.5rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+h1, h2, h3 {
+  color: var(--text-main);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 { font-size: 2.5rem; color: var(--accent); }
+h2 { font-size: 1.8rem; }
+
+/* Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(43, 192, 210, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  border: 2px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border);
+}
+
+.text-center { text-align: center; }
+.text-accent { color: var(--accent); }
+.text-primary { color: var(--primary); }
+.mb-4 { margin-bottom: 1rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mt-8 { margin-top: 2rem; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  h1 { font-size: 1.8rem; }
+  .container { padding: 0 var(--space-sm); }
+  .card { padding: var(--space-md); }
+}
