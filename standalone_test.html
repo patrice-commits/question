@@ -413,6 +413,12 @@
 
         questions.sort((a, b) => a.id - b.id);
 
+        const questionMap = {};
+        questions.forEach(q => {
+            if (!questionMap[q.traitId]) questionMap[q.traitId] = [];
+            questionMap[q.traitId].push(q.id);
+        });
+
         // --- STATE ---
         let state = {
             view: 'hero',
@@ -759,14 +765,19 @@
         }
         // --- RENDERERS ---
         function render() {
-            app.innerHTML = '';
-            progressText.innerText = '';
+            try {
+                app.innerHTML = '';
+                progressText.innerText = '';
 
-            if (state.view === 'hero') renderHero();
-            else if (state.view === 'onboarding') renderOnboarding();
-            else if (state.view === 'instructions') renderInstructions();
-            else if (state.view === 'test') renderTest();
-            else if (state.view === 'results') renderResults();
+                if (state.view === 'hero') renderHero();
+                else if (state.view === 'onboarding') renderOnboarding();
+                else if (state.view === 'instructions') renderInstructions();
+                else if (state.view === 'test') renderTest();
+                else if (state.view === 'results') renderResults();
+            } catch (e) {
+                console.error(e);
+                app.innerHTML = `<div class="card" style="color: red; padding: 2rem;">Une erreur est survenue: ${e.message}</div>`;
+            }
         }
 
         function renderHero() {
